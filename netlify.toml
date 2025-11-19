@@ -1,0 +1,23 @@
+# netlify.toml
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevent your site from being displayed in an iframe (stops Clickjacking)
+    X-Frame-Options = "DENY"
+    
+    # Protects against MIME sniffing
+    X-Content-Type-Options = "nosniff"
+    
+    # Force XSS protection in older browsers
+    X-XSS-Protection = "1; mode=block"
+    
+    # Enforce HTTPS Strict Transport Security (1 year)
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    
+    # Content Security Policy (CSP) - The Holy Grail
+    # This tells the browser: "Only run scripts from MY domain."
+    # Note: We added connect-src to allow Formspree.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://formspree.io;"
+    
+    # Controls how much referrer info is sent to other sites
+    Referrer-Policy = "strict-origin-when-cross-origin"
