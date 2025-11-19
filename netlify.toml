@@ -2,6 +2,9 @@
 [[headers]]
   for = "/*"
   [headers.values]
+
+    # Prevent your site from accessing microphone, camera, and geo-location.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     # Prevent your site from being displayed in an iframe (stops Clickjacking)
     X-Frame-Options = "DENY"
     
