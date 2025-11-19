@@ -172,6 +172,8 @@ const modules = {
         
         <!-- Notice the ID added to the form and NAME attributes added to inputs -->
         <form class="cli-form" id="contact-form">
+            <!-- HONEYPOT: Hidden from humans, bots will fill it -->
+    <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off">
             <div class="input-group">
                 <label>source_ip (Your Email):</label>
                 <input type="email" name="email" class="cli-input" required autofocus>
