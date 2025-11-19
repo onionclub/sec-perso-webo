@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINH_OS // SECURE TERMINAL</title>
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --void-black: #020202; 
+            --terminal-green: #00FF41;
+            --terminal-dim: #003b10;
+            --amber: #FFB000;
+            --plastic: #0a0a0a; 
+            --hub-bg: #0e0e0e;
+            --font-primary: 'Courier New', Courier, monospace;
+            --font-secondary: 'Verdana', sans-serif;
+            
+            /* Physics */
+            --anim-speed: 0.5s;
+            --anim-ease: cubic-bezier(0.2, 0.8, 0.2, 1); 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #000;
+            background-image: radial-gradient(circle at bottom, #051a1a 0%, #000000 80%);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-primary);
+            overflow: hidden;
+            color: var(--terminal-green);
+        }
+
+        /* --- STARS --- */
+        .star-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .star { position: absolute; background: #ffffff; width: 2px; height: 2px; opacity: 0.8; animation: floatUp linear infinite; }
+        @keyframes floatUp { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
+
+        /* --- MAIN HARDWARE --- */
+        .crt-monitor {
+            position: relative;
+            width: 900px;
+            height: 650px;
+            background-color: var(--plastic);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,1), 0 0 0 2px #1a1a1a;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            z-index: 10;
+            
+            /* PATCH: Layout Locking */
+            /* This stops the screen from growing/shifting when large content loads */
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow: hidden; 
+        }
+
+        .screen-container {
+            flex-grow: 1;
+            height: 100%;
+            background-color: var(--void-black);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #333;
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+            z-index: 11;
+            min-width: 0; /* Stops flex items from breaking out */
+        }
+
+        .crt-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                        linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none; z-index: 20;
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker { 0% { opacity: 0.97; } 100% { opacity: 1; } }
+
+        .screen-content {
+            padding: 40px; height: 100%; width: 100%; overflow-y: auto; 
+            text-shadow: 0 0 2px var(--terminal-dim);
+            position: relative; z-index: 15;
+            
+            /* PATCH: Content Safety */
+            word-wrap: break-word;
+            overflow-x: hidden;
+        }
+        .screen-content::-webkit-scrollbar { width: 6px; }
+        .screen-content::-webkit-scrollbar-track { background: #050505; }
+        .screen-content::-webkit-scrollbar-thumb { background: var(--terminal-dim); border-radius: 3px; }
+
+        /* --- VERTICAL HUB SYSTEM --- */
+        
+        .hub-container {
+            width: 120px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            margin-left: 20px;
+            background: var(--hub-bg);
+            border-radius: 6px;
+            border: 1px solid #333;
+            position: relative;
+            z-index: 12;
+            overflow: visible; 
+            flex-shrink: 0; /* Locks Hub Width */
+        }
+
+        /* 1. PORT ASSEMBLY */
+        .port-assembly {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: auto; 
+            background: transparent;
+        }
+
+        /* LAYER 1: THE HOLE */
+        .port-hole {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 48px; height: 63px; 
+            background: #000;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,1);
+            z-index: 10; 
+            border-radius: 2px;
+            border: 1px solid #333;
+        }
+
+        /* PHANTOM TARGET */
+        #phantom-target {
+            position: absolute;
+            width: 36px; height: 110px; 
+            top: 10px; 
+            left: 50%; transform: translateX(-50%);
+            z-index: 0; opacity: 0; 
+            pointer-events: none;
+        }
+
+        /* LAYER 3: THE MASK */
+        .port-mask {
+            position: absolute;
+            top: 25px; 
+            width: 46px; height: 20px;
+            background: linear-gradient(to bottom, var(--hub-bg) 80%, transparent);
+            z-index: 60; 
+            pointer-events: none;
+        }
+
+        /* PATCH: FIXED TEXT POSITION */
+        .port-label {
+            position: absolute; 
+            top: -15px; /* Moved UP to clear the gray mask box */
+            width: 100%; text-align: center;
+            font-size: 0.5rem; color: #555; letter-spacing: 2px; font-family: var(--font-secondary);
+        }
+
+        /* --- DRIVE RACK --- */
+        .drive-rack {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: flex-end;
+            justify-content: center;
+            padding-bottom: 30px;
+            gap: 15px;
+            z-index: 20; 
+        }
+
+        /* --- USB DRIVES --- */
+        .usb-drive {
+            width: 36px; height: 110px;
+            background: linear-gradient(to right, #333, #1a1a1a, #333);
+            border-radius: 2px 2px 4px 4px;
+            cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 15px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            border-bottom: 2px solid #555;
+            position: relative;
+            z-index: 20; 
+            --tx: 0px;
+            --ty: 0px;
+            transition: transform var(--anim-speed) var(--anim-ease), box-shadow 0.3s;
+        }
+
+        .usb-drive::before {
+            content: ''; position: absolute; top: -12px; left: 5px; right: 5px; height: 12px;
+            background: linear-gradient(to right, #999, #666, #999);
+            border: 1px solid #444; border-bottom: none;
+            border-radius: 2px 2px 0 0;
+            z-index: -1;
+            transition: opacity 0.1s; 
+        }
+
+        .usb-label {
+            font-family: var(--font-secondary); font-size: 0.55rem; color: #888; 
+            font-weight: bold; text-transform: uppercase; 
+            pointer-events: none; letter-spacing: 2px;
+            writing-mode: vertical-rl; transform: rotate(180deg); margin-bottom: 10px;
+        }
+
+        .usb-led {
+            width: 6px; height: 6px; background-color: #330000; 
+            border-radius: 50%; box-shadow: inset 0 0 2px #000; 
+            margin-bottom: 10px; transition: background-color 0.1s;
+        }
+
+        .usb-drive:not(.plugged-in):hover { 
+            transform: translateY(-10px); 
+            background: linear-gradient(to right, #444, #2a2a2a, #444);
+        }
+
+        /* ACTIVE STATE */
+        .usb-drive.plugged-in { 
+            transform: translate(var(--tx), var(--ty));
+            box-shadow: none;
+            background: linear-gradient(to right, #1a1a1a, #000, #1a1a1a);
+            z-index: 50; 
+        }
+
+        .usb-drive.plugged-in::before { opacity: 0; transition-delay: 0.4s; }
+        
+        .usb-drive.plugged-in .usb-led { 
+            background-color: var(--terminal-green); 
+            box-shadow: 0 0 8px var(--terminal-green); 
+            animation: blink 0.1s infinite; 
+        }
+        
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* --- CONTENT STYLES --- */
+        h1, h2, h3 { font-weight: normal; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 1px; }
+        p { line-height: 1.6; margin-bottom: 1rem; opacity: 0.9; font-family: var(--font-secondary); font-size: 0.9rem; color: #ccffcc; }
+        .highlight { color: var(--amber); }
+        .grid-layout { display: grid; grid-template-areas: "header header" "bio specs" "philo specs"; grid-template-columns: 2fr 1fr; gap: 20px; height: 100%; }
+        .bento-box { border: 1px solid var(--terminal-green); padding: 15px; background: rgba(0, 255, 65, 0.02); position: relative; }
+        .area-header { grid-area: header; border-bottom: 2px solid var(--terminal-green); display: flex; justify-content: space-between; align-items: center; }
+        .area-bio { grid-area: bio; }
+        .area-specs { grid-area: specs; font-size: 0.85rem; }
+        .area-philo { grid-area: philo; font-style: italic; color: var(--amber); border-color: var(--amber); }
+        .modules-container { display: flex; flex-direction: column; gap: 15px; }
+        .skill-module { border: 1px solid #333; background: rgba(10, 10, 10, 0.9); transition: all 0.3s; overflow: hidden; }
+        .skill-module:hover { border-color: var(--terminal-green); }
+        .module-header { padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #444; }
+        .skill-module.expanded .module-header { border-left-color: var(--terminal-cyan); background: rgba(0, 255, 255, 0.05); }
+        .module-body { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; opacity: 0; background: rgba(0,0,0,0.5); }
+        .skill-module.expanded .module-body { max-height: 800px; opacity: 1; border-top: 1px solid rgba(0, 255, 65, 0.2); }
+        .module-content { padding: 20px; }
+        .tech-list li { margin-bottom: 8px; font-size: 0.9rem; padding-left: 15px; position: relative; }
+        .tech-list li::before { content: '>'; position: absolute; left: 0; color: var(--terminal-green); }
+        .cli-form { display: flex; flex-direction: column; gap: 15px; max-width: 600px; }
+        .input-group { display: flex; align-items: flex-start; flex-direction: column; }
+        .input-group label { margin-bottom: 5px; color: var(--amber); }
+        .cli-input { background: transparent; border: none; border-bottom: 1px solid var(--terminal-green); color: var(--terminal-green); width: 100%; padding: 5px; outline: none; }
+        .cli-btn { background: var(--terminal-green); color: #000; border: none; padding: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .glitch-active { animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; color: red; }
+        @keyframes glitch-skew { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+
+        /* --- MOBILE & TABLET OVERRIDE --- */
+        @media (max-width: 1024px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .crt-monitor { width: 100vw; height: 100vh; flex-direction: column; padding: 15px; border-radius: 0; }
+            .screen-container { width: 100%; flex-grow: 1; margin-bottom: 15px; }
+
+            .hub-container { 
+                width: 100%; height: 120px; 
+                flex-direction: row; margin-left: 0; 
+                overflow: visible; 
+            }
+
+            .port-assembly { 
+                width: 120px; height: 100%; 
+                order: 2; 
+            }
+            
+            .port-label { top: 20px; }
+
+            .port-hole { width: 63px; height: 43px; }
+
+            .port-mask {
+                top: 36px; left: auto; right: 15px;
+                width: 15px; height: 48px;
+                background: linear-gradient(to left, var(--hub-bg) 80%, transparent);
+            }
+
+            #phantom-target {
+                width: 90px; height: 34px;
+                top: 50%; transform: translateY(-50%);
+                left: 10px; 
+            }
+
+            .drive-rack { 
+                order: 1; flex-grow: 1; 
+                width: auto; height: 100%;
+                flex-direction: row; 
+                padding-bottom: 0; padding-right: 20px;
+                align-items: center; justify-content: space-around;
+                gap: 10px;
+            }
+
+            .usb-drive { 
+                width: 90px; height: 34px; 
+                flex-direction: row; 
+                align-items: center; justify-content: space-between;
+                padding: 0 10px;
+                background: linear-gradient(to bottom, #333, #1a1a1a, #333);
+                border-bottom: 1px solid #333; border-right: 2px solid #555;
+            }
+
+            .usb-drive::before {
+                top: 5px; bottom: 5px; left: auto; right: -12px;
+                width: 12px; height: auto;
+                background: linear-gradient(to bottom, #999, #666, #999);
+                border: 1px solid #444; border-left: none;
+                border-radius: 0 2px 2px 0;
+            }
+
+            .usb-label { 
+                writing-mode: horizontal-tb; transform: none; 
+                margin-bottom: 0; font-size: 0.6rem; order: 1;
+            }
+            .usb-led { margin-bottom: 0; margin-right: 0; order: 2; }
+
+            .usb-drive:not(.plugged-in):hover { 
+                transform: translateX(10px); 
+                background: linear-gradient(to bottom, #444, #2a2a2a, #444);
+            }
+            
+            .usb-drive.plugged-in { 
+                background: linear-gradient(to bottom, #1a1a1a, #000, #1a1a1a);
+            }
+            
+            .grid-layout { grid-template-columns: 1fr; grid-template-areas: "header" "bio" "specs" "philo"; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="stars-back" class="star-layer"></div>
+    <div id="stars-mid" class="star-layer"></div>
+    <div id="stars-front" class="star-layer"></div>
+
+    <div class="crt-monitor">
+        <div class="screen-container" id="monitor-screen">
+            <div class="crt-overlay"></div>
+            <div class="screen-content" id="screen-content"></div>
+        </div>
+
+        <div class="hub-container">
+            
+            <div class="port-assembly">
+                <div class="port-label">I/O PORT</div>
+                
+                <div class="port-mask"></div>
+
+                <div class="port-hole">
+                    <div id="phantom-target"></div> 
+                </div>
+            </div>
+
+            <div class="drive-rack">
+                <div class="usb-drive" data-id="uplink" onclick="handleDriveClick('uplink')">
+                    <span class="usb-label">UPLINK</span><div class="usb-led"></div>
+                </div>
+                <div class="usb-drive" data-id="services" onclick="handleDriveClick('services')">
+                    <span class="usb-label">SERV</span><div class="usb-led"></div>
+                </div>
+                <div class="usb-drive" data-id="arsenal" onclick="handleDriveClick('arsenal')">
+                    <span class="usb-label">SKILLS</span><div class="usb-led"></div>
+                </div>
+                <div class="usb-drive" data-id="identity" onclick="handleDriveClick('identity')">
+                    <span class="usb-label">ID_DATA</span><div class="usb-led"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="content.js"></script>
+
+    <script>
+        /* --- STARS --- */
+        function generateStars(layerId, count, size, duration) {
+            const layer = document.getElementById(layerId);
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const delay = Math.random() * duration;
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `-${delay}s`;
+                layer.appendChild(star);
+            }
+        }
+        generateStars('stars-back', 100, 1, 20);
+        generateStars('stars-mid', 40, 2, 10);
+        generateStars('stars-front', 10, 3, 5);
+
+        /* --- AUDIO --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            if (type === 'click') {
+                osc.type = 'square'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'insert') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+            } else {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+            }
+        }
+
+        /* --- LOGIC --- */
+        const screenContent = document.getElementById('screen-content');
+        let isBooted = false;
+        let currentActiveDrive = null; 
+        let isAnimating = false;
+
+        window.onload = () => {
+            const bootText = `INITIALIZING SYSTEM...\n> CHECKING KERNEL... OK\n> MOUNTING VOLUMES... OK\n> SINGLE PORT MODE... ACTIVE\n\nWELCOME, MINH.\nPLEASE INSERT MODULE.`;
+            const bootContainer = document.createElement('div');
+            bootContainer.style.whiteSpace = 'pre-wrap';
+            screenContent.appendChild(bootContainer);
+            
+            let i = 0;
+            function type() {
+                if (i < bootText.length) {
+                    bootContainer.innerHTML += bootText.charAt(i); i++;
+                    if(i%3 === 0) playSound('boot'); 
+                    setTimeout(type, 20);
+                } else { 
+                    bootContainer.innerHTML += '<span class="blink">_</span>'; 
+                    isBooted = true; 
+                }
+            }
+            type();
+        };
+
+        function handleDriveClick(driveId) {
+            if (!isBooted || isAnimating) return; 
+            if (currentActiveDrive === driveId) return;
+
+            if (currentActiveDrive && currentActiveDrive !== driveId) {
+                isAnimating = true;
+                const oldDrive = document.querySelector(`.usb-drive[data-id="${currentActiveDrive}"]`);
+                if(oldDrive) {
+                    oldDrive.classList.remove('plugged-in');
+                    oldDrive.style.transform = 'translate(0,0)'; 
+                }
+                playSound('click');
+                setTimeout(() => {
+                    plugInNewDrive(driveId);
+                }, 500);
+            } else {
+                plugInNewDrive(driveId);
+            }
+        }
+
+        function plugInNewDrive(driveId) {
+            isAnimating = true;
+            const driveElement = document.querySelector(`.usb-drive[data-id="${driveId}"]`);
+            const portTarget = document.getElementById('phantom-target');
+
+            const driveRect = driveElement.getBoundingClientRect();
+            const portRect = portTarget.getBoundingClientRect();
+
+            const deltaX = portRect.left - driveRect.left;
+            const deltaY = portRect.top - driveRect.top;
+
+            driveElement.style.setProperty('--tx', `${deltaX}px`);
+            driveElement.style.setProperty('--ty', `${deltaY}px`);
+
+            driveElement.classList.add('plugged-in');
+            currentActiveDrive = driveId;
+            
+            setTimeout(() => {
+                playSound('insert');
+                loadContent(driveId);
+                isAnimating = false; 
+            }, 500);
+        }
+
+        function loadContent(moduleName) {
+            screenContent.classList.add('glitch-active');
+            setTimeout(() => {
+                if (typeof modules !== 'undefined' && modules[moduleName]) {
+                    screenContent.innerHTML = modules[moduleName];
+                } else {
+                    screenContent.innerHTML = "<p style='color:red'>ERROR: DATA MODULE MISSING.</p>";
+                }
+                screenContent.classList.remove('glitch-active');
+                const overlay = document.querySelector('.crt-overlay');
+                overlay.style.animation = 'none'; 
+                overlay.offsetHeight; 
+                overlay.style.animation = 'flicker 0.15s infinite';
+            }, 300);
+        }
+
+        window.toggleModule = function(header) {
+            playSound('click');
+            const module = header.parentElement;
+            const statusText = header.querySelector('.module-status');
+            const container = module.closest('.modules-container');
+            if(container) {
+                container.querySelectorAll('.skill-module').forEach(m => {
+                    if(m !== module) {
+                        m.classList.remove('expanded');
+                        m.querySelector('.module-status').innerText = "[ CLOSED ]";
+                    }
+                });
+            }
+            module.classList.toggle('expanded');
+            if(module.classList.contains('expanded')) {
+                statusText.innerText = "[ READING ]";
+            } else {
+                statusText.innerText = "[ CLOSED ]";
+            }
+        }
+    </script>
+</body>
+</html>
