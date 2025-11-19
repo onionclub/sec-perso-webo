@@ -528,7 +528,50 @@
                 overlay.style.animation = 'flicker 0.15s infinite';
             }, 300);
         }
+        
+document.addEventListener('submit', function(e) {
+    if (e.target && e.target.id === 'contact-form') {
+        e.preventDefault();
+        
+        const form = e.target;
+        const status = document.getElementById('form-status');
+        const btn = form.querySelector('button');
+        
+        // 1. Change button text to indicate processing
+        btn.innerHTML = "[ UPLOADING... ]";
+        btn.disabled = true;
 
+        const data = new FormData(form);
+
+        // 2. Send to Formspree (REPLACE 'YOUR_FORM_ID' BELOW)
+        fetch("https://formspree.io/f/mjklyvyq", {
+            method: "POST",
+            body: data,
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                status.innerHTML = ">> TRANSMISSION SUCCESSFUL. STAND BY.";
+                form.reset(); // Clear inputs
+                playSound('insert'); // Re-use your existing sound effect!
+            } else {
+                response.json().then(data => {
+                    if (Object.hasOwn(data, 'errors')) {
+                        status.innerHTML = ">> ERROR: " + data["errors"].map(error => error["message"]).join(", ");
+                    } else {
+                        status.innerHTML = ">> ERROR: CONNECTION REFUSED.";
+                    }
+                })
+            }
+        }).catch(error => {
+            status.innerHTML = ">> ERROR: NETWORK FAILURE.";
+        }).finally(() => {
+            btn.innerHTML = "[ EXECUTE TRANSMISSION ]";
+            btn.disabled = false;
+        });
+    }
+});
         window.toggleModule = function(header) {
             playSound('click');
             const module = header.parentElement;

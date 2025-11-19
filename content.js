@@ -169,17 +169,20 @@ const modules = {
     uplink: `
         <h2 class="highlight">ENCRYPTED TRANSMISSION DETECTED</h2>
         <p style="border-bottom: 1px dashed #333; padding-bottom:10px;">Secure tunnel established. Encryption: AES-256.</p>
-        <form class="cli-form" onsubmit="event.preventDefault(); alert('TRANSMISSION SENT.');">
+        
+        <!-- Notice the ID added to the form and NAME attributes added to inputs -->
+        <form class="cli-form" id="contact-form">
             <div class="input-group">
-                <label>source_ip (Your Name):</label>
-                <input type="text" class="cli-input" autofocus>
+                <label>source_ip (Your Email):</label>
+                <input type="email" name="email" class="cli-input" required autofocus>
             </div>
             <div class="input-group">
                 <label>payload (Message):</label>
-                <input type="text" class="cli-input">
+                <input type="text" name="message" class="cli-input" required>
             </div>
-            <button class="cli-btn">[ EXECUTE TRANSMISSION ]</button>
+            <button class="cli-btn" type="submit">[ EXECUTE TRANSMISSION ]</button>
         </form>
+        <div id="form-status" style="margin-top:10px; color: var(--terminal-green);"></div>
         <p style="font-size: 0.7rem; margin-top: 20px; color: #555;">Zero-log policy enforced. I respect the sanctity of your data.</p>
     `
 };
