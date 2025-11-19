@@ -1,4 +1,4 @@
-// --- MINH_OS CONTENT CARTRIDGE ---
+// --- ASHER_OS CONTENT CARTRIDGE ---
 // Edit this file to change text, services, or skills.
 // Do not touch the backticks (`) at the start and end of sections.
 
@@ -6,19 +6,19 @@ const modules = {
     identity: `
         <div class="grid-layout">
             <div class="bento-box area-header">
-                <h2>OPERATOR: MINH NGUYEN</h2>
-                <span class="highlight">STATUS: ONLINE [HOUSTON, TX]</span>
+                <h2>OPERATOR: NESS ASHER</h2>
+                <span class="highlight">LEGAL_ID: MINH NGUYEN [VERIFIED]</span>
             </div>
             <div class="bento-box area-bio">
                 <h3>// BIO_METRICS</h3>
-                <p>A digital guardian operating in the space between rigid logic and intuitive defense. Valedictorian and High-Honors Mathematician (UT Austin), initially on a pre-medical trajectory, now a Cybersecurity Specialist.</p>
-                <p>This path, rooted in analytical rigor and a deep commitment to well-being, has evolved from human health to digital security, where I do not just patch vulnerabilities; I secure legacies.</p>
+                <p>Operating globally under the handle 'Ness Asher' to maintain digital sovereignty. While my operational footprint is obscured by design, my credentials remain transparent.</p>
+                <p>Valedictorian and High-Honors Mathematician (UT Austin). I have evolved from a pre-medical trajectory to digital security. I do not just patch vulnerabilities; I secure legacies.</p>
             </div>
             <div class="bento-box area-specs">
                 <h3>// SYS_SPECS</h3>
                 <ul>
-                    <li>> B.A. Mathematics (3.96 GPA)</li>
-                    <li>> M.S. Cybersecurity (WGU)</li>
+                    <li>> B.A. Mathematics (3.96 GPA) <span style="color:#555;">[ID: M. Nguyen]</span></li>
+                    <li>> M.S. Cybersecurity (WGU) <span style="color:#555;">[ID: M. Nguyen]</span></li>
                     <li>> Archetype: INFJ // Architect</li>
                     <li>> System ID: 012435531</li>
                 </ul>
@@ -31,7 +31,7 @@ const modules = {
 
     arsenal: `
         <div class="modules-container">
-            <p style="color:#666; font-size:0.8rem; margin-bottom:10px;">root@minh_os:~/profile# select_module_to_mount</p>
+            <p style="color:#666; font-size:0.8rem; margin-bottom:10px;">root@asher_core:~/profile# select_module_to_mount</p>
 
             <div class="skill-module">
                 <div class="module-header" onclick="toggleModule(this)">
@@ -111,7 +111,7 @@ const modules = {
 
     services: `
          <div class="modules-container">
-            <p style="color:#666; font-size:0.8rem; margin-bottom:10px; text-align:center;">root@minh_os:~/services# initiate_protocol_sequence</p>
+            <p style="color:#666; font-size:0.8rem; margin-bottom:10px; text-align:center;">root@asher_core:~/services# initiate_protocol_sequence</p>
 
             <div class="skill-module">
                 <div class="module-header" onclick="toggleModule(this)">
