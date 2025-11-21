@@ -11,7 +11,7 @@ const modules = {
             <div class="bento-box area-bio">
                 <h3>// ABOUT_ME</h3>
                 
-                <img src="https://media.gettyimages.com/id/1158240131/photo/duck-butts.jpg?s=612x612&w=0&k=20&c=_y54oohOjJ8qiFKUW9lTaf-80fHlU_KkIgFDqJIjanI=" class="pet-frame" alt="Security Dog">
+                <img src="dog.png" class="pet-frame" alt="Security Dog">
                 
                 <p>Operating globally under the handle 'Ness Asher'. My approach to security is different: I believe digital safety should be accessible, not scary.</p>
                 <p>Valedictorian and Mathematician (UT Austin) turned Cybersecurity Specialist. I don't just write code; I help families and small businesses sleep easier at night.</p>
@@ -184,4 +184,5 @@ const modules = {
         <p style="font-size: 0.7rem; margin-top: 20px; color: #555;">Your data is kept strictly confidential.</p>
     `
 };
+
 
