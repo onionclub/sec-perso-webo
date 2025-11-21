@@ -235,7 +235,7 @@
         </div>
     </div>
 
-    <script src="content.js"></script>
+    <script src="content.js?v=final_fixes"></script>
 
     <script>
         /* --- STARS --- */
@@ -337,8 +337,10 @@
                 isAnimating = true;
                 const oldDrive = document.querySelector(`.usb-drive[data-id="${currentActiveDrive}"]`);
                 if(oldDrive) {
+                    // BUG FIX: Wipe memory of old coordinates so it can be clicked again later
                     oldDrive.classList.remove('plugged-in');
-                    oldDrive.style.transform = 'translate(0,0)'; 
+                    oldDrive.style.removeProperty('--tx');
+                    oldDrive.style.removeProperty('--ty');
                 }
                 playSound('click');
                 setTimeout(() => {
@@ -362,6 +364,9 @@
 
             driveElement.style.setProperty('--tx', `${deltaX}px`);
             driveElement.style.setProperty('--ty', `${deltaY}px`);
+
+            // BUG FIX: Force a browser reflow so fast clicks animate correctly
+            void driveElement.offsetWidth;
 
             driveElement.classList.add('plugged-in');
             currentActiveDrive = driveId;
