@@ -10,13 +10,11 @@
             --void-black: #020202; 
             --terminal-green: #00FF41;
             --terminal-dim: #003b10;
-            --amber: #FFB000;
+            --amber: #FFB000; /* Used for the CTA */
             --plastic: #0a0a0a; 
             --hub-bg: #0e0e0e;
             --font-primary: 'Courier New', Courier, monospace;
             --font-secondary: 'Verdana', sans-serif;
-            
-            /* Physics */
             --anim-speed: 0.5s;
             --anim-ease: cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
@@ -26,13 +24,9 @@
         body {
             background-color: #000;
             background-image: radial-gradient(circle at bottom, #051a1a 0%, #000000 80%);
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: var(--font-primary);
-            overflow: hidden;
+            height: 100vh; width: 100vw;
+            display: flex; justify-content: center; align-items: center;
+            font-family: var(--font-primary); overflow: hidden;
             color: var(--terminal-green);
         }
 
@@ -41,210 +35,119 @@
         .star { position: absolute; background: #ffffff; width: 2px; height: 2px; opacity: 0.8; animation: floatUp linear infinite; }
         @keyframes floatUp { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
 
-        /* --- MAIN HARDWARE --- */
+        /* --- MONITOR --- */
         .crt-monitor {
-            position: relative;
-            width: 900px;
-            height: 650px;
-            background-color: var(--plastic);
-            border-radius: 20px;
-            padding: 40px;
+            position: relative; width: 900px; height: 650px;
+            background-color: var(--plastic); border-radius: 20px; padding: 40px;
             box-shadow: inset 0 0 30px rgba(0,0,0,1), 0 0 0 2px #1a1a1a;
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            z-index: 10;
-            
-            /* PATCH: Layout Locking */
-            /* This stops the screen from growing/shifting when large content loads */
-            max-width: 95vw;
-            max-height: 90vh;
-            overflow: hidden; 
+            display: flex; flex-direction: row; align-items: flex-start;
+            z-index: 10; max-width: 95vw; max-height: 90vh; overflow: hidden; 
         }
 
         .screen-container {
-            flex-grow: 1;
-            height: 100%;
-            background-color: var(--void-black);
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #333;
-            box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
-            z-index: 11;
-            min-width: 0; /* Stops flex items from breaking out */
+            flex-grow: 1; height: 100%; background-color: var(--void-black);
+            border-radius: 4px; position: relative; overflow: hidden;
+            border: 2px solid #333; box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+            z-index: 11; min-width: 0;
         }
 
         .crt-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
                         linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
-            background-size: 100% 4px, 6px 100%;
-            pointer-events: none; z-index: 20;
+            background-size: 100% 4px, 6px 100%; pointer-events: none; z-index: 20;
             animation: flicker 0.15s infinite;
         }
         @keyframes flicker { 0% { opacity: 0.97; } 100% { opacity: 1; } }
 
         .screen-content {
             padding: 40px; height: 100%; width: 100%; overflow-y: auto; 
-            text-shadow: 0 0 2px var(--terminal-dim);
-            position: relative; z-index: 15;
-            
-            /* PATCH: Content Safety */
-            word-wrap: break-word;
-            overflow-x: hidden;
+            text-shadow: 0 0 2px var(--terminal-dim); position: relative; z-index: 15;
+            word-wrap: break-word; overflow-x: hidden;
         }
         .screen-content::-webkit-scrollbar { width: 6px; }
         .screen-content::-webkit-scrollbar-track { background: #050505; }
         .screen-content::-webkit-scrollbar-thumb { background: var(--terminal-dim); border-radius: 3px; }
 
-        /* --- VERTICAL HUB SYSTEM --- */
+        /* --- NEW UX ELEMENTS --- */
         
-        .hub-container {
-            width: 120px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            margin-left: 20px;
-            background: var(--hub-bg);
-            border-radius: 6px;
-            border: 1px solid #333;
-            position: relative;
-            z-index: 12;
-            overflow: visible; 
-            flex-shrink: 0; /* Locks Hub Width */
+        /* 1. The "Game Prompt" Box */
+        .action-prompt {
+            margin-top: 40px;
+            border: 2px dashed var(--amber);
+            color: var(--amber);
+            padding: 20px;
+            text-align: center;
+            font-family: var(--font-secondary);
+            font-weight: bold;
+            opacity: 0; /* Hidden by default */
+            animation: pulsePrompt 1.5s infinite ease-in-out;
+            cursor: default;
+        }
+        
+        @keyframes pulsePrompt {
+            0% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); box-shadow: 0 0 15px var(--amber); }
+            100% { opacity: 0.4; transform: scale(0.98); }
         }
 
-        /* 1. PORT ASSEMBLY */
-        .port-assembly {
+        .arrow-down { font-size: 2rem; display: block; margin-top: 10px; }
+
+        /* 2. The Pet Image Styling */
+        .pet-frame {
             width: 100%;
-            height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: auto; 
-            background: transparent;
+            max-width: 250px; /* Keeps it from getting too huge */
+            height: auto;
+            border: 2px solid var(--terminal-green);
+            padding: 5px;
+            margin-bottom: 15px;
+            filter: grayscale(100%) contrast(1.2); /* Makes it look retro */
+            display: block;
+            margin-left: auto; margin-right: auto;
         }
 
-        /* LAYER 1: THE HOLE */
-        .port-hole {
-            position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 48px; height: 63px; 
-            background: #000;
-            box-shadow: inset 0 10px 20px rgba(0,0,0,1);
-            z-index: 10; 
-            border-radius: 2px;
-            border: 1px solid #333;
+        /* --- HUB & DRIVES --- */
+        .hub-container {
+            width: 120px; height: 100%; display: flex; flex-direction: column;
+            margin-left: 20px; background: var(--hub-bg); border-radius: 6px;
+            border: 1px solid #333; position: relative; z-index: 12; flex-shrink: 0;
         }
 
-        /* PHANTOM TARGET */
-        #phantom-target {
-            position: absolute;
-            width: 36px; height: 110px; 
-            top: 10px; 
-            left: 50%; transform: translateX(-50%);
-            z-index: 0; opacity: 0; 
-            pointer-events: none;
-        }
+        .port-assembly { width: 100%; height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .port-hole { position: absolute; width: 48px; height: 63px; background: #000; box-shadow: inset 0 10px 20px rgba(0,0,0,1); border-radius: 2px; border: 1px solid #333; z-index: 10; }
+        #phantom-target { position: absolute; width: 36px; height: 110px; top: 10px; left: 50%; transform: translateX(-50%); z-index: 0; opacity: 0; pointer-events: none; }
+        .port-mask { position: absolute; top: 25px; width: 46px; height: 20px; background: linear-gradient(to bottom, var(--hub-bg) 80%, transparent); z-index: 60; pointer-events: none; }
+        .port-label { position: absolute; top: -15px; width: 100%; text-align: center; font-size: 0.5rem; color: #555; letter-spacing: 2px; font-family: var(--font-secondary); }
 
-        /* LAYER 3: THE MASK */
-        .port-mask {
-            position: absolute;
-            top: 25px; 
-            width: 46px; height: 20px;
-            background: linear-gradient(to bottom, var(--hub-bg) 80%, transparent);
-            z-index: 60; 
-            pointer-events: none;
-        }
+        .drive-rack { flex-grow: 1; display: flex; flex-direction: row; flex-wrap: wrap; align-content: flex-end; justify-content: center; padding-bottom: 30px; gap: 15px; z-index: 20; }
 
-        /* PATCH: FIXED TEXT POSITION */
-        .port-label {
-            position: absolute; 
-            top: -15px; /* Moved UP to clear the gray mask box */
-            width: 100%; text-align: center;
-            font-size: 0.5rem; color: #555; letter-spacing: 2px; font-family: var(--font-secondary);
-        }
-
-        /* --- DRIVE RACK --- */
-        .drive-rack {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-content: flex-end;
-            justify-content: center;
-            padding-bottom: 30px;
-            gap: 15px;
-            z-index: 20; 
-        }
-
-        /* --- USB DRIVES --- */
         .usb-drive {
             width: 36px; height: 110px;
             background: linear-gradient(to right, #333, #1a1a1a, #333);
-            border-radius: 2px 2px 4px 4px;
-            cursor: pointer;
+            border-radius: 2px 2px 4px 4px; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            padding-bottom: 15px;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.8);
-            border: 1px solid #333;
-            border-bottom: 2px solid #555;
-            position: relative;
-            z-index: 20; 
-            --tx: 0px;
-            --ty: 0px;
+            padding-bottom: 15px; box-shadow: 0 5px 10px rgba(0,0,0,0.8);
+            border: 1px solid #333; border-bottom: 2px solid #555;
+            position: relative; z-index: 20; --tx: 0px; --ty: 0px;
             transition: transform var(--anim-speed) var(--anim-ease), box-shadow 0.3s;
         }
-
-        .usb-drive::before {
-            content: ''; position: absolute; top: -12px; left: 5px; right: 5px; height: 12px;
-            background: linear-gradient(to right, #999, #666, #999);
-            border: 1px solid #444; border-bottom: none;
-            border-radius: 2px 2px 0 0;
-            z-index: -1;
-            transition: opacity 0.1s; 
-        }
-
+        .usb-drive::before { content: ''; position: absolute; top: -12px; left: 5px; right: 5px; height: 12px; background: linear-gradient(to right, #999, #666, #999); border: 1px solid #444; border-bottom: none; border-radius: 2px 2px 0 0; z-index: -1; transition: opacity 0.1s; }
+        
+        /* Updated Labels to be clearer */
         .usb-label {
-            font-family: var(--font-secondary); font-size: 0.55rem; color: #888; 
-            font-weight: bold; text-transform: uppercase; 
-            pointer-events: none; letter-spacing: 2px;
+            font-family: var(--font-secondary); font-size: 0.50rem; color: #aaa; 
+            font-weight: bold; text-transform: uppercase; pointer-events: none; letter-spacing: 1px;
             writing-mode: vertical-rl; transform: rotate(180deg); margin-bottom: 10px;
         }
 
-        .usb-led {
-            width: 6px; height: 6px; background-color: #330000; 
-            border-radius: 50%; box-shadow: inset 0 0 2px #000; 
-            margin-bottom: 10px; transition: background-color 0.1s;
-        }
-
-        .usb-drive:not(.plugged-in):hover { 
-            transform: translateY(-10px); 
-            background: linear-gradient(to right, #444, #2a2a2a, #444);
-        }
-
-        /* ACTIVE STATE */
-        .usb-drive.plugged-in { 
-            transform: translate(var(--tx), var(--ty));
-            box-shadow: none;
-            background: linear-gradient(to right, #1a1a1a, #000, #1a1a1a);
-            z-index: 50; 
-        }
-
+        .usb-led { width: 6px; height: 6px; background-color: #330000; border-radius: 50%; box-shadow: inset 0 0 2px #000; margin-bottom: 10px; transition: background-color 0.1s; }
+        .usb-drive:not(.plugged-in):hover { transform: translateY(-10px); background: linear-gradient(to right, #444, #2a2a2a, #444); }
+        .usb-drive.plugged-in { transform: translate(var(--tx), var(--ty)); box-shadow: none; background: linear-gradient(to right, #1a1a1a, #000, #1a1a1a); z-index: 50; }
         .usb-drive.plugged-in::before { opacity: 0; transition-delay: 0.4s; }
-        
-        .usb-drive.plugged-in .usb-led { 
-            background-color: var(--terminal-green); 
-            box-shadow: 0 0 8px var(--terminal-green); 
-            animation: blink 0.1s infinite; 
-        }
-        
+        .usb-drive.plugged-in .usb-led { background-color: var(--terminal-green); box-shadow: 0 0 8px var(--terminal-green); animation: blink 0.1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* --- CONTENT STYLES --- */
+        /* Content Styles */
         h1, h2, h3 { font-weight: normal; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 1px; }
         p { line-height: 1.6; margin-bottom: 1rem; opacity: 0.9; font-family: var(--font-secondary); font-size: 0.9rem; color: #ccffcc; }
         .highlight { color: var(--amber); }
@@ -277,75 +180,19 @@
             body { flex-direction: column; overflow-y: auto; }
             .crt-monitor { width: 100vw; height: 100vh; flex-direction: column; padding: 15px; border-radius: 0; }
             .screen-container { width: 100%; flex-grow: 1; margin-bottom: 15px; }
-
-            .hub-container { 
-                width: 100%; height: 120px; 
-                flex-direction: row; margin-left: 0; 
-                overflow: visible; 
-            }
-
-            .port-assembly { 
-                width: 120px; height: 100%; 
-                order: 2; 
-            }
-            
+            .hub-container { width: 100%; height: 120px; flex-direction: row; margin-left: 0; overflow: visible; }
+            .port-assembly { width: 120px; height: 100%; order: 2; }
             .port-label { top: 20px; }
-
             .port-hole { width: 63px; height: 43px; }
-
-            .port-mask {
-                top: 36px; left: auto; right: 15px;
-                width: 15px; height: 48px;
-                background: linear-gradient(to left, var(--hub-bg) 80%, transparent);
-            }
-
-            #phantom-target {
-                width: 90px; height: 34px;
-                top: 50%; transform: translateY(-50%);
-                left: 10px; 
-            }
-
-            .drive-rack { 
-                order: 1; flex-grow: 1; 
-                width: auto; height: 100%;
-                flex-direction: row; 
-                padding-bottom: 0; padding-right: 20px;
-                align-items: center; justify-content: space-around;
-                gap: 10px;
-            }
-
-            .usb-drive { 
-                width: 90px; height: 34px; 
-                flex-direction: row; 
-                align-items: center; justify-content: space-between;
-                padding: 0 10px;
-                background: linear-gradient(to bottom, #333, #1a1a1a, #333);
-                border-bottom: 1px solid #333; border-right: 2px solid #555;
-            }
-
-            .usb-drive::before {
-                top: 5px; bottom: 5px; left: auto; right: -12px;
-                width: 12px; height: auto;
-                background: linear-gradient(to bottom, #999, #666, #999);
-                border: 1px solid #444; border-left: none;
-                border-radius: 0 2px 2px 0;
-            }
-
-            .usb-label { 
-                writing-mode: horizontal-tb; transform: none; 
-                margin-bottom: 0; font-size: 0.6rem; order: 1;
-            }
+            .port-mask { top: 36px; left: auto; right: 15px; width: 15px; height: 48px; background: linear-gradient(to left, var(--hub-bg) 80%, transparent); }
+            #phantom-target { width: 90px; height: 34px; top: 50%; transform: translateY(-50%); left: 10px; }
+            .drive-rack { order: 1; flex-grow: 1; width: auto; height: 100%; flex-direction: row; padding-bottom: 0; padding-right: 20px; align-items: center; justify-content: space-around; gap: 10px; }
+            .usb-drive { width: 90px; height: 34px; flex-direction: row; align-items: center; justify-content: space-between; padding: 0 10px; background: linear-gradient(to bottom, #333, #1a1a1a, #333); border-bottom: 1px solid #333; border-right: 2px solid #555; }
+            .usb-drive::before { top: 5px; bottom: 5px; left: auto; right: -12px; width: 12px; height: auto; background: linear-gradient(to bottom, #999, #666, #999); border: 1px solid #444; border-left: none; border-radius: 0 2px 2px 0; }
+            .usb-label { writing-mode: horizontal-tb; transform: none; margin-bottom: 0; font-size: 0.6rem; order: 1; }
             .usb-led { margin-bottom: 0; margin-right: 0; order: 2; }
-
-            .usb-drive:not(.plugged-in):hover { 
-                transform: translateX(10px); 
-                background: linear-gradient(to bottom, #444, #2a2a2a, #444);
-            }
-            
-            .usb-drive.plugged-in { 
-                background: linear-gradient(to bottom, #1a1a1a, #000, #1a1a1a);
-            }
-            
+            .usb-drive:not(.plugged-in):hover { transform: translateX(10px); background: linear-gradient(to bottom, #444, #2a2a2a, #444); }
+            .usb-drive.plugged-in { background: linear-gradient(to bottom, #1a1a1a, #000, #1a1a1a); }
             .grid-layout { grid-template-columns: 1fr; grid-template-areas: "header" "bio" "specs" "philo"; }
         }
     </style>
@@ -363,12 +210,9 @@
         </div>
 
         <div class="hub-container">
-            
             <div class="port-assembly">
                 <div class="port-label">I/O PORT</div>
-                
                 <div class="port-mask"></div>
-
                 <div class="port-hole">
                     <div id="phantom-target"></div> 
                 </div>
@@ -376,16 +220,16 @@
 
             <div class="drive-rack">
                 <div class="usb-drive" data-id="uplink" onclick="handleDriveClick('uplink')">
-                    <span class="usb-label">UPLINK</span><div class="usb-led"></div>
+                    <span class="usb-label">CONTACT</span><div class="usb-led"></div>
                 </div>
                 <div class="usb-drive" data-id="services" onclick="handleDriveClick('services')">
-                    <span class="usb-label">SERV</span><div class="usb-led"></div>
+                    <span class="usb-label">SERVICES</span><div class="usb-led"></div>
                 </div>
                 <div class="usb-drive" data-id="arsenal" onclick="handleDriveClick('arsenal')">
                     <span class="usb-label">SKILLS</span><div class="usb-led"></div>
                 </div>
                 <div class="usb-drive" data-id="identity" onclick="handleDriveClick('identity')">
-                    <span class="usb-label">ID_DATA</span><div class="usb-led"></div>
+                    <span class="usb-label">ABOUT</span><div class="usb-led"></div>
                 </div>
             </div>
         </div>
@@ -435,9 +279,10 @@
                 gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-            } else {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            } else if (type === 'boot') { 
+                /* Softer boot sound */
+                osc.type = 'sine'; osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.02, audioCtx.currentTime);
                 gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.05);
             }
@@ -450,7 +295,7 @@
         let isAnimating = false;
 
         window.onload = () => {
-            const bootText = `INITIALIZING SYSTEM...\n> CHECKING KERNEL... OK\n> MOUNTING VOLUMES... OK\n> SINGLE PORT MODE... ACTIVE\n\nWELCOME, NESS.\nPLEASE INSERT MODULE.`;
+            const bootText = `INITIALIZING SYSTEM...\n> CHECKING KERNEL... OK\n> MOUNTING VOLUMES... OK\n> SINGLE PORT MODE... ACTIVE\n\nWELCOME, NESS.`;
             const bootContainer = document.createElement('div');
             bootContainer.style.whiteSpace = 'pre-wrap';
             screenContent.appendChild(bootContainer);
@@ -459,19 +304,34 @@
             function type() {
                 if (i < bootText.length) {
                     bootContainer.innerHTML += bootText.charAt(i); i++;
-                    if(i%3 === 0) playSound('boot'); 
+                    if(i%4 === 0) playSound('boot'); 
                     setTimeout(type, 20);
                 } else { 
-                    bootContainer.innerHTML += '<span class="blink">_</span>'; 
-                    isBooted = true; 
+                    isBooted = true;
+                    showGamePrompt(); // Trigger the new prompt
                 }
             }
             type();
         };
 
+        // NEW FUNCTION: Shows the flashing instruction
+        function showGamePrompt() {
+            const prompt = document.createElement('div');
+            prompt.className = 'action-prompt';
+            prompt.innerHTML = `
+                [ SELECT A MODULE TO LOAD ]
+                <span class="arrow-down">⇩</span>
+            `;
+            screenContent.appendChild(prompt);
+        }
+
         function handleDriveClick(driveId) {
             if (!isBooted || isAnimating) return; 
             if (currentActiveDrive === driveId) return;
+
+            // Remove the game prompt if it exists
+            const prompt = document.querySelector('.action-prompt');
+            if(prompt) prompt.remove();
 
             if (currentActiveDrive && currentActiveDrive !== driveId) {
                 isAnimating = true;
@@ -522,6 +382,7 @@
                     screenContent.innerHTML = "<p style='color:red'>ERROR: DATA MODULE MISSING.</p>";
                 }
                 screenContent.classList.remove('glitch-active');
+                // Reset overlay animation
                 const overlay = document.querySelector('.crt-overlay');
                 overlay.style.animation = 'none'; 
                 overlay.offsetHeight; 
@@ -529,49 +390,46 @@
             }, 300);
         }
         
-document.addEventListener('submit', function(e) {
-    if (e.target && e.target.id === 'contact-form') {
-        e.preventDefault();
-        
-        const form = e.target;
-        const status = document.getElementById('form-status');
-        const btn = form.querySelector('button');
-        
-        // 1. Change button text to indicate processing
-        btn.innerHTML = "[ UPLOADING... ]";
-        btn.disabled = true;
+        document.addEventListener('submit', function(e) {
+            if (e.target && e.target.id === 'contact-form') {
+                e.preventDefault();
+                
+                const form = e.target;
+                const status = document.getElementById('form-status');
+                const btn = form.querySelector('button');
+                
+                btn.innerHTML = "[ UPLOADING... ]";
+                btn.disabled = true;
 
-        const data = new FormData(form);
+                const data = new FormData(form);
 
-        // 2. Send to Formspree (REPLACE 'YOUR_FORM_ID' BELOW)
-        fetch("https://formspree.io/f/mpwbppkd", {
-            method: "POST",
-            body: data,
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                status.innerHTML = ">> TRANSMISSION SUCCESSFUL. STAND BY.";
-                form.reset(); // Clear inputs
-                playSound('insert'); // Re-use your existing sound effect!
-            } else {
-                response.json().then(data => {
-                    if (Object.hasOwn(data, 'errors')) {
-                        status.innerHTML = ">> ERROR: " + data["errors"].map(error => error["message"]).join(", ");
+                fetch("https://formspree.io/f/mpwbppkd", {
+                    method: "POST",
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                }).then(response => {
+                    if (response.ok) {
+                        status.innerHTML = ">> TRANSMISSION SUCCESSFUL. STAND BY.";
+                        form.reset(); 
+                        playSound('insert'); 
                     } else {
-                        status.innerHTML = ">> ERROR: CONNECTION REFUSED.";
+                        response.json().then(data => {
+                            if (Object.hasOwn(data, 'errors')) {
+                                status.innerHTML = ">> ERROR: " + data["errors"].map(error => error["message"]).join(", ");
+                            } else {
+                                status.innerHTML = ">> ERROR: CONNECTION REFUSED.";
+                            }
+                        })
                     }
-                })
+                }).catch(error => {
+                    status.innerHTML = ">> ERROR: NETWORK FAILURE.";
+                }).finally(() => {
+                    btn.innerHTML = "[ EXECUTE TRANSMISSION ]";
+                    btn.disabled = false;
+                });
             }
-        }).catch(error => {
-            status.innerHTML = ">> ERROR: NETWORK FAILURE.";
-        }).finally(() => {
-            btn.innerHTML = "[ EXECUTE TRANSMISSION ]";
-            btn.disabled = false;
         });
-    }
-});
+
         window.toggleModule = function(header) {
             playSound('click');
             const module = header.parentElement;
@@ -594,5 +452,4 @@ document.addEventListener('submit', function(e) {
         }
     </script>
 </body>
-
 </html>
