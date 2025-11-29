@@ -4,96 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asher Star Security: Security Intruder Plan</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        /* --- CORE STYLES (NO TAILWIND) --- */
         body {
             font-family: 'Inter', sans-serif;
-            -webkit-print-color-adjust: exact;
-             /* Force the font to load immediately */
-             visibility: visible !important;
+            background-color: #f1f5f9; /* Slate 100 */
+            color: #1e293b; /* Slate 800 */
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1024px; /* max-w-5xl */
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* HEADER */
+        header {
+            background-color: #0f172a; /* Slate 900 */
+            color: white;
+            padding: 3rem;
+            position: relative;
         }
         
-        /* --- PROFESSIONAL PRINT STYLES --- */
-        @media print {
-            @page { 
-                margin: 0.5cm; 
-                size: auto; 
-            }
-            
-            body { 
-                background-color: white !important; 
-                color: black !important;
-                -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important; 
-                font-size: 12pt; /* slightly smaller for better fit */
-            }
-
-            .no-print { display: none !important; }
-            .page-break { page-break-before: always !important; }
-
-            /* Reset container to use full paper width */
-            .container { 
-                max-width: 100% !important; 
-                width: 100% !important; 
-                box-shadow: none !important; 
-                border: none !important; 
-                margin: 0 !important; 
-                padding: 0 !important;
-                overflow: visible !important;
-            }
-
-            /* PREVENT CUTTING SECTIONS IN HALF */
-            section, .grid, .rounded-xl, li, div { 
-                break-inside: avoid; 
-                page-break-inside: avoid; 
-            }
-
-            /* Ensure images fit */
-            img { 
-                max-width: 100% !important; 
-                height: auto !important; 
-            }
-
-            /* Adjust headers for print */
-            header {
-                padding: 1.5rem !important;
-            }
-
-            /* Force backgrounds to print */
-            .bg-slate-50, .bg-blue-50, .bg-red-50, .bg-white {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-        }
-        /* -------------------------------- */
-
-        .security-alert {
-            background-image: repeating-linear-gradient(45deg, #fee2e2 0, #fee2e2 10px, #fecaca 10px, #fecaca 20px);
-        }
-        /* Fallback styling for broken images in preview */
-        .img-placeholder {
+        .header-content {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #f1f5f9;
-            border: 2px dashed #cbd5e1;
-            color: #64748b;
-            padding: 2rem;
-            text-align: center;
-            border-radius: 0.5rem;
-            min-height: 200px;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 10;
         }
-        .img-placeholder svg {
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.05em;
+        }
+
+        .sub-header {
+            font-size: 1.5rem;
+            color: #60a5fa; /* Blue 400 */
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .warning-box {
+            background-color: rgba(127, 29, 29, 0.3); /* Red 900/30 */
+            border-left: 4px solid #ef4444; /* Red 500 */
+            padding: 1rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .warning-title {
+            color: #fecaca; /* Red 200 */
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            background-color: #2563eb; /* Blue 600 */
+            color: white;
+            font-weight: bold;
+            border-radius: 0.5rem;
             width: 3rem;
             height: 3rem;
-            margin-bottom: 0.5rem;
-            opacity: 0.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(191, 219, 254, 0.5);
         }
-        .img-placeholder span {
-            font-size: 0.875rem;
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        /* GRID LAYOUTS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+            .header-content { flex-direction: row; }
+            .col-span-2 { grid-column: span 2; }
+        }
+
+        /* CARDS */
+        .card {
+            background-color: white;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .card-red {
+            background-color: #fef2f2; /* Red 50 */
+            border-color: #fee2e2;
+        }
+
+        .card-blue {
+            background-color: #eff6ff; /* Blue 50 */
+            border-color: #dbeafe;
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+
+        li { margin-bottom: 0.5rem; }
+
+        /* IMAGES */
+        .img-container {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        img { width: 100%; height: auto; display: block; }
+        
+        .img-caption {
+            background-color: #f8fafc;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
             font-family: monospace;
+        }
+
+        /* EMERGENCY SHEET */
+        .emergency-section {
+            background-color: #0f172a;
+            color: white;
+            padding: 2rem;
+        }
+
+        .dotted-border {
+            border: 4px dashed #475569;
+            padding: 2rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+
+        .emergency-title {
+            color: #facc15; /* Yellow 400 */
+            text-align: center;
+            font-size: 1.875rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+        }
+
+        /* UTILS */
+        .text-sm { font-size: 0.875rem; }
+        .text-gray { color: #64748b; }
+        .bg-slate-50 { background-color: #f8fafc; }
+        
+        /* IMAGE ERROR HANDLER */
+        .img-placeholder {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: #f1f5f9; border: 2px dashed #cbd5e1;
+            color: #64748b; padding: 2rem; text-align: center; min-height: 200px;
         }
     </style>
     <script>
@@ -101,144 +218,122 @@
             const fileName = img.getAttribute('src');
             const placeholder = document.createElement('div');
             placeholder.className = 'img-placeholder';
-            placeholder.innerHTML = `
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span class="font-bold text-slate-700">Image Missing in Preview</span>
-                <span>${fileName}</span>
-                <span class="text-xs text-slate-500 mt-2">Save this HTML & .png in same folder.</span>
-            `;
+            placeholder.innerHTML = `<span style="font-weight:bold;display:block;margin-bottom:5px;">Image Missing</span><span>${fileName}</span>`;
             img.parentNode.replaceChild(placeholder, img);
         }
     </script>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen p-4 md:p-8">
+<body>
 
-    <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden border border-slate-200 container">
+    <div class="container">
         
-        <!-- Header Section -->
-        <header class="bg-slate-900 text-white p-8 md:p-12 relative overflow-hidden">
-            <div class="relative z-10">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-slate-700 pb-6 mb-6">
-                    <div>
-                        <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-2">Asher Star Security</h1>
-                        <p class="text-xl md:text-2xl text-blue-400 font-bold tracking-wide">SECURITY INTRUDER PLAN</p>
-                    </div>
-                    <div class="mt-4 md:mt-0 text-right">
-                        <div class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider mb-1">Confidential</div>
-                        <p class="text-slate-400 text-sm">Date: November 2025</p>
-                    </div>
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>Asher Star Security</h1>
+                    <p class="sub-header">SECURITY INTRUDER PLAN</p>
                 </div>
-                
-                <div class="mt-8 bg-red-900/30 border-l-4 border-red-500 p-4">
-                    <p class="text-red-200 font-semibold flex items-center">
-                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        WARNING
-                    </p>
-                    <p class="text-slate-300 mt-1">This process is detailed because the attackers are persistent. Please follow every step in order. Do not skip the "Checks" even if you think the account looks fine.</p>
+                <div style="text-align: right;">
+                    <div style="display:inline-block; background-color:#dc2626; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:0.75rem;">CONFIDENTIAL</div>
+                    <p style="color:#94a3b8; font-size:0.875rem; margin-top:5px;">Date: November 2025</p>
                 </div>
             </div>
-            <!-- Abstract bg decoration -->
-            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600 rounded-full blur-3xl opacity-10 -translate-y-1/2 translate-x-1/3"></div>
+            
+            <div class="warning-box">
+                <p class="warning-title">⚠️ WARNING</p>
+                <p style="color:#cbd5e1; margin-top:5px; font-size:0.9rem;">This process is detailed because the attackers are persistent. Please follow every step in order.</p>
+            </div>
         </header>
 
-        <!-- Phase 1 (Stacked) -->
-        <section class="p-8 border-b border-slate-200">
-            <div class="flex items-center mb-6">
-                <div class="bg-blue-600 text-white font-bold rounded-lg w-12 h-12 flex items-center justify-center text-2xl mr-4 shadow-lg shadow-blue-200">1</div>
+        <section>
+            <div class="section-header">
+                <div class="step-number">1</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 uppercase">Sanitize the Device</h2>
-                    <p class="text-slate-500">Goal: Ensure the iPhone itself isn't spying on her before we type any new passwords.</p>
+                    <h2>Sanitize the Device</h2>
+                    <p class="text-gray text-sm">Goal: Ensure the iPhone itself isn't spying on her.</p>
                 </div>
             </div>
 
-            <!-- Image Stacked -->
-            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg mb-8">
-                <img src="phase1.png" onerror="handleImageError(this)" alt="Phase 1 Visual Guide" class="w-full h-auto">
-                <div class="bg-slate-50 p-2 text-center text-xs text-slate-400 font-mono">FIGURE 1.0: DEVICE SANITIZATION</div>
+            <div class="img-container">
+                <img src="phase1.png" onerror="handleImageError(this)" alt="Phase 1">
+                <div class="img-caption">FIGURE 1.0: DEVICE SANITIZATION</div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">1. Check for "Spy" Profiles</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                        <li>Go to <strong>iPhone Settings (Gear icon) -> General</strong>.</li>
-                        <li>Scroll down to <strong>VPN & Device Management</strong>.</li>
-                        <li class="font-semibold text-blue-700 bg-blue-50 p-2 rounded">The Check: You should see NOTHING here (or just "VPN Not Connected").</li>
-                        <li><strong>Action:</strong> If you see a "Configuration Profile" or anything you don't recognize, tap it and <strong>Delete Profile</strong>.</li>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>1. Check for "Spy" Profiles</h3>
+                    <ul>
+                        <li>Go to <strong>Settings -> General -> VPN & Device Management</strong>.</li>
+                        <li style="color:#1d4ed8; background-color:#eff6ff; padding:5px; border-radius:4px; font-weight:600;">Check: You should see NOTHING here.</li>
+                        <li><strong>Action:</strong> If you see a profile, tap and Delete it.</li>
                     </ul>
                 </div>
 
-                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">2. Check for "Spy" Keyboards</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
+                <div class="card">
+                    <h3>2. Check for "Spy" Keyboards</h3>
+                    <ul>
                         <li>Go to <strong>Settings -> General -> Keyboard -> Keyboards</strong>.</li>
-                        <li><strong>Action:</strong> If you see any third-party keyboards (like "Grammarly" or random names), swipe left and <strong>Delete</strong> them.</li>
-                        <li>Keep only "English," "Vietnamese," and "Emoji."</li>
+                        <li><strong>Action:</strong> Remove any third-party keyboards (like Grammarly).</li>
+                        <li>Keep only English, Vietnamese, and Emoji.</li>
                     </ul>
                 </div>
 
-                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm md:col-span-2">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">3. Check for Linked Apple Devices</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                        <li>Go to <strong>Settings -> Tap [Mom's Name/Picture]</strong> at the very top.</li>
-                        <li>Scroll down to the list of devices.</li>
-                        <li><strong>Action:</strong> If you see an iPad, Mac, or iPhone that she does not currently own/use, tap it and select <strong>Remove from Account</strong>.</li>
+                <div class="card col-span-2">
+                    <h3>3. Check for Linked Devices</h3>
+                    <ul>
+                        <li>Go to <strong>Settings -> Tap [Name/Picture]</strong> at the top.</li>
+                        <li>Scroll down.</li>
+                        <li><strong>Action:</strong> Remove any iPad or Mac she doesn't own.</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Phase 2 (Stacked) -->
-        <section class="p-8 border-b border-slate-200 bg-slate-50">
-            <div class="flex items-center mb-6">
-                <div class="bg-blue-600 text-white font-bold rounded-lg w-12 h-12 flex items-center justify-center text-2xl mr-4 shadow-lg shadow-blue-200">2</div>
+        <section class="bg-slate-50">
+            <div class="section-header">
+                <div class="step-number">2</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 uppercase">Cleaning Facebook</h2>
-                    <p class="text-slate-500">Goal: Kick out the "Night Bot" and remove the hacker's secret backdoors.</p>
+                    <h2>Cleaning Facebook</h2>
+                    <p class="text-gray text-sm">Goal: Kick out the "Night Bot" and remove backdoors.</p>
                 </div>
             </div>
 
-            <!-- Image Stacked -->
-            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg mb-8">
-                <img src="phase2.png" onerror="handleImageError(this)" alt="Phase 2 Visual Guide" class="w-full h-auto">
-                <div class="bg-white p-2 text-center text-xs text-slate-400 font-mono">FIGURE 2.0: FACEBOOK DEEP CLEAN</div>
+            <div class="img-container">
+                <img src="phase2.png" onerror="handleImageError(this)" alt="Phase 2">
+                <div class="img-caption">FIGURE 2.0: FACEBOOK DEEP CLEAN</div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">4. The "Secret Key" Check</h3>
-                    <p class="text-sm text-slate-500 mb-2 italic">Area: Business Integrations</p>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                        <li>Open Facebook App -> Menu -> Settings.</li>
-                        <li>Scroll to "Your Activity" -> <strong>Apps and Websites</strong>.</li>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>4. The "Secret Key" Check</h3>
+                    <p class="text-gray text-sm" style="font-style:italic; margin-bottom:5px;">Area: Business Integrations</p>
+                    <ul>
+                        <li>Settings -> "Your Activity" -> <strong>Apps and Websites</strong>.</li>
                         <li><strong>Action:</strong> Remove EVERYTHING.</li>
-                        <li>Look for <strong>Business Integrations</strong>.</li>
-                        <li><strong>Action:</strong> Remove EVERYTHING.</li>
+                        <li>Look for <strong>Business Integrations</strong> and remove everything.</li>
                     </ul>
                 </div>
 
-                <div class="bg-red-50 p-5 rounded-lg border border-red-100 shadow-sm">
-                    <h3 class="font-bold text-lg text-red-800 mb-2">5. The "Rogue Owner" Check (Critical)</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                        <li>In Facebook Settings, tap <strong>Accounts Center</strong>.</li>
-                        <li>Tap <strong>Personal Details -> Contact Info</strong>.</li>
-                        <li class="font-semibold text-red-700">Check: Delete any strange Email/Phone.</li>
-                        <li><strong>Action:</strong> Delete immediately.</li>
+                <div class="card card-red">
+                    <h3 style="color:#991b1b;">5. The "Rogue Owner" Check</h3>
+                    <ul>
+                        <li><strong>Accounts Center -> Personal Details -> Contact Info</strong>.</li>
+                        <li style="color:#b91c1c; font-weight:bold;">Check: Delete any strange Email/Phone.</li>
                     </ul>
                 </div>
 
-                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">6. The "Imposter" Check</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                        <li>In Accounts Center, tap <strong>Accounts</strong>.</li>
-                        <li><strong>Action:</strong> Remove any unknown Instagram/Meta profiles.</li>
+                <div class="card">
+                    <h3>6. The "Imposter" Check</h3>
+                    <ul>
+                        <li>Accounts Center -> <strong>Accounts</strong>.</li>
+                        <li><strong>Action:</strong> Remove unknown Instagram/Meta profiles.</li>
                     </ul>
                 </div>
 
-                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">7. The Final Eviction</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                        <li>Settings -> Password and Security -> <strong>Where you're logged in</strong>.</li>
+                <div class="card">
+                    <h3>7. The Final Eviction</h3>
+                    <ul>
+                        <li>Password and Security -> <strong>Where you're logged in</strong>.</li>
                         <li><strong>Action:</strong> Select All -> Log Out.</li>
                         <li><strong>Final Step:</strong> Change password.</li>
                     </ul>
@@ -246,194 +341,128 @@
             </div>
         </section>
 
-        <!-- Phase 3 (Side-by-Side / "The Only Vertical One") -->
-        <section class="p-8 border-b border-slate-200">
-            <div class="flex items-center mb-6">
-                <div class="bg-blue-600 text-white font-bold rounded-lg w-12 h-12 flex items-center justify-center text-2xl mr-4 shadow-lg shadow-blue-200">3</div>
+        <section>
+            <div class="section-header">
+                <div class="step-number">3</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 uppercase">The Telephony Shield</h2>
-                    <p class="text-slate-500">Goal: Stop the spoofed calls and lock the phone number.</p>
+                    <h2>The Telephony Shield</h2>
+                    <p class="text-gray text-sm">Goal: Stop spoofed calls and lock the number.</p>
                 </div>
             </div>
 
-            <!-- Side by Side Layout for Phase 3 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div class="space-y-6">
-                    <div class="bg-blue-50 p-5 rounded-lg border border-blue-100 shadow-sm">
-                        <h3 class="font-bold text-lg text-blue-900 mb-2">8. The "Port Freeze" (Critical)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                            <li><strong>Action:</strong> Call her mobile carrier (Dial 611).</li>
-                            <li class="italic">Script: "I need to enable a 'Port Freeze' (or 'Number Lock') on this line to prevent SIM swapping. Please set a PIN on the account."</li>
+            <div class="grid-2">
+                <div>
+                    <div class="card card-blue" style="margin-bottom: 1.5rem;">
+                        <h3 style="color:#1e3a8a;">8. The "Port Freeze" (Critical)</h3>
+                        <ul>
+                            <li><strong>Action:</strong> Call carrier (Dial 611).</li>
+                            <li>Script: "I need to enable a 'Port Freeze' to prevent SIM swapping."</li>
                         </ul>
-                        <div class="mt-4 p-4 bg-white rounded border border-blue-200">
-                            <label class="block text-xs font-bold text-blue-400 uppercase mb-1">Write PIN Here</label>
-                            <div class="h-10 border-b-2 border-slate-300 w-full"></div>
+                        <div style="margin-top:1rem; padding:1rem; background:white; border:1px solid #bfdbfe; border-radius:4px;">
+                            <label style="font-size:0.75rem; font-weight:bold; color:#60a5fa; text-transform:uppercase;">Write PIN Here</label>
+                            <div style="height:30px; border-bottom:2px solid #cbd5e1;"></div>
                         </div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                        <h3 class="font-bold text-lg text-slate-800 mb-2">9. Check Call Forwarding</h3>
-                        <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                            <li>Go to <strong>iPhone Settings -> Phone -> Call Forwarding</strong>.</li>
-                            <li><strong>Action:</strong> Ensure this is turned <strong>OFF</strong>.</li>
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <h3>9. Check Call Forwarding</h3>
+                        <ul>
+                            <li><strong>Settings -> Phone -> Call Forwarding</strong>.</li>
+                            <li><strong>Action:</strong> Ensure this is OFF.</li>
                         </ul>
                     </div>
 
-                    <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                        <h3 class="font-bold text-lg text-slate-800 mb-2">10. Silence the Noise</h3>
-                        <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                            <li>Go to <strong>iPhone Settings -> Phone</strong>.</li>
-                            <li>Scroll down to <strong>Silence Unknown Callers</strong>.</li>
-                            <li><strong>Action:</strong> Turn it <strong>ON (Green)</strong>.</li>
+                    <div class="card">
+                        <h3>10. Silence the Noise</h3>
+                        <ul>
+                            <li><strong>Settings -> Phone -> Silence Unknown Callers</strong>.</li>
+                            <li><strong>Action:</strong> Turn it ON.</li>
                         </ul>
                     </div>
                 </div>
-                
-                <!-- Image Side by Side -->
-                <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg">
-                    <img src="phase3.png" onerror="handleImageError(this)" alt="Phase 3 Visual Guide" class="w-full h-auto">
-                    <div class="bg-slate-50 p-2 text-center text-xs text-slate-400 font-mono">FIGURE 3.0: TELEPHONY SHIELD</div>
+
+                <div class="img-container">
+                    <img src="phase3.png" onerror="handleImageError(this)" alt="Phase 3">
+                    <div class="img-caption">FIGURE 3.0: TELEPHONY SHIELD</div>
                 </div>
             </div>
         </section>
 
-        <!-- Phase 4 (Stacked) -->
-        <section class="p-8 border-b border-slate-200 bg-slate-50">
-            <div class="flex items-center mb-6">
-                <div class="bg-blue-600 text-white font-bold rounded-lg w-12 h-12 flex items-center justify-center text-2xl mr-4 shadow-lg shadow-blue-200">4</div>
+        <section class="bg-slate-50">
+            <div class="section-header">
+                <div class="step-number">4</div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900 uppercase">The Email Perimeter</h2>
-                    <p class="text-sm text-slate-500">Goal: Ensure she sees security alerts.</p>
+                    <h2>The Email Perimeter</h2>
                 </div>
             </div>
 
-            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg mb-6">
-                <img src="phase4.png" onerror="handleImageError(this)" alt="Phase 4 Visual Guide" class="w-full h-auto">
-                <div class="bg-white p-2 text-center text-xs text-slate-400 font-mono">FIGURE 4.0: EMAIL PERIMETER</div>
+            <div class="img-container">
+                <img src="phase4.png" onerror="handleImageError(this)" alt="Phase 4">
+                <div class="img-caption">FIGURE 4.0: EMAIL PERIMETER</div>
             </div>
 
-            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                <h3 class="font-bold text-lg text-slate-800 mb-2">11. The "Hidden Rule" Check</h3>
-                <p class="text-sm text-slate-600 mb-2">You usually need a computer or the official Email App for this (not Apple Mail).</p>
-                <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                    <li>Open her Email provider (Gmail/Yahoo/Outlook).</li>
-                    <li>Go to <strong>Settings -> Look for Filters or Rules</strong>.</li>
-                    <li><strong>Action:</strong> Delete any rule that mentions "Facebook," "Delete," or "Archive."</li>
+            <div class="card">
+                <h3>11. The "Hidden Rule" Check</h3>
+                <ul>
+                    <li>Open Email provider (Gmail/Yahoo) on a computer.</li>
+                    <li>Go to <strong>Settings -> Filters or Rules</strong>.</li>
+                    <li><strong>Action:</strong> Delete any rule mentioning "Facebook," "Delete," or "Archive."</li>
                 </ul>
             </div>
         </section>
 
-        <!-- Phase 5 (Stacked) -->
-        <section class="p-8 border-b border-slate-200">
-            <div class="flex items-center mb-6">
-                <div class="bg-blue-600 text-white font-bold rounded-lg w-12 h-12 flex items-center justify-center text-2xl mr-4 shadow-lg shadow-blue-200">5</div>
+         <section>
+            <div class="section-header">
+                <div class="step-number">5</div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900 uppercase">Locking the Doors</h2>
-                    <p class="text-sm text-slate-500">Goal: Future proofing settings.</p>
+                    <h2>Locking the Doors</h2>
                 </div>
             </div>
 
-            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg mb-6">
-                <img src="phase5.png" onerror="handleImageError(this)" alt="Phase 5 Visual Guide" class="w-full h-auto">
-                <div class="bg-slate-50 p-2 text-center text-xs text-slate-400 font-mono">FIGURE 5.0: FUTURE PROOFING</div>
+            <div class="img-container">
+                <img src="phase5.png" onerror="handleImageError(this)" alt="Phase 5">
+                <div class="img-caption">FIGURE 5.0: FUTURE PROOFING</div>
             </div>
 
-            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-                <h3 class="font-bold text-lg text-slate-800 mb-2">12. The Admin Lock</h3>
-                <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
-                    <li>Go to <strong>iPhone Settings -> Screen Time</strong>.</li>
-                    <li>Tap Lock Screen Time Settings.</li>
-                    <li><strong>Action:</strong> Set a 4-digit PIN that <strong>ONLY YOU</strong> know.</li>
-                    <li>Tap <strong>Content & Privacy Restrictions</strong> -> Turn it ON.</li>
-                    <li>Scroll to "Allow Changes":</li>
-                    <li><strong>Account Changes</strong> -> Set to Don't Allow.</li>
-                    <li><strong>Passcode Changes</strong> -> Set to Don't Allow.</li>
+            <div class="card">
+                <h3>12. The Admin Lock</h3>
+                <ul>
+                    <li><strong>Settings -> Screen Time -> Lock Screen Time Settings</strong>.</li>
+                    <li><strong>Action:</strong> Set a 4-digit PIN ONLY YOU know.</li>
+                    <li><strong>Content & Privacy Restrictions</strong> -> ON.</li>
+                    <li>Set <strong>Account Changes</strong> to "Don't Allow".</li>
                 </ul>
             </div>
         </section>
 
-        <!-- Emergency One-Sheet (Stacked) -->
-        <section class="p-8 bg-slate-900 text-white page-break">
-            <div class="border-4 border-dashed border-slate-600 p-8 rounded-2xl relative">
-                <div class="absolute top-0 right-0 bg-slate-800 text-slate-400 text-xs px-2 py-1 rounded-bl-lg font-mono uppercase">Cut along dotted line</div>
+        <section class="emergency-section">
+            <div class="dotted-border">
+                <h2 class="emergency-title">Emergency One-Sheet</h2>
+                <div class="img-container">
+                    <img src="emergency.png" onerror="handleImageError(this)" alt="Emergency English">
+                </div>
                 
-                <h2 class="text-3xl font-black text-center uppercase tracking-widest text-yellow-400 mb-8">Emergency One-Sheet</h2>
-                <p class="text-center text-slate-400 mb-8 -mt-6">Print this or write these 3 rules on a paper near her phone</p>
-
-                <!-- Stacked Layout for Emergency sheet -->
-                <div class="space-y-8">
-                    
-                    <!-- Visual Aids (Stacked on top) -->
-                    <div>
-                        <!-- English Version -->
-                        <div class="rounded-xl overflow-hidden border-4 border-slate-700 shadow-2xl mb-6">
-                            <img src="emergency.png" onerror="handleImageError(this)" alt="Emergency Protocols Visual (English)" class="w-full h-auto">
-                        </div>
-                        
-                        <!-- Vietnamese Version -->
-                        <div class="rounded-xl overflow-hidden border-4 border-slate-700 shadow-2xl">
-                            <img src="emergencyV.png" onerror="handleImageError(this)" alt="Emergency Protocols Visual (Vietnamese)" class="w-full h-auto">
-                        </div>
+                <div class="grid-2" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div style="background:#dc2626; padding:1.5rem; border-radius:0.75rem;">
+                        <h3>1. Call Back Rule</h3>
+                        <p class="text-sm">If friend asks for money: Hang up. Call back from Contacts.</p>
                     </div>
-
-                    <!-- Rules Text -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-slate-800">
-                        <!-- Rule 1 -->
-                        <div class="bg-red-600 text-white p-6 rounded-xl shadow-lg">
-                            <h3 class="font-black text-xl uppercase mb-2 flex items-center">
-                                <span class="bg-white text-red-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 font-bold">1</span>
-                                Call Back Rule
-                            </h3>
-                            <p class="font-medium text-sm">If a friend asks for money:</p>
-                            <ul class="mt-2 text-sm text-red-100 list-disc list-inside">
-                                <li>Hang up.</li>
-                                <li>Call back from Contacts.</li>
-                            </ul>
-                        </div>
-
-                        <!-- Rule 2 -->
-                        <div class="bg-yellow-500 text-yellow-900 p-6 rounded-xl shadow-lg">
-                            <h3 class="font-black text-xl uppercase mb-2 flex items-center">
-                                <span class="bg-yellow-900 text-yellow-400 w-8 h-8 rounded-full flex items-center justify-center mr-3 font-bold">2</span>
-                                The Safe Word
-                            </h3>
-                            <p class="font-medium text-sm">If relative is in trouble:</p>
-                            <p class="font-bold mt-2 text-sm">Ask: "What is the Safe Word?"</p>
-                            <div class="mt-2 bg-white/30 border-2 border-yellow-900/50 p-2 rounded text-center">
-                                <div class="h-4"></div>
-                            </div>
-                        </div>
-
-                        <!-- Rule 3 -->
-                        <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg">
-                            <h3 class="font-black text-xl uppercase mb-2 flex items-center">
-                                <span class="bg-white text-green-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 font-bold">3</span>
-                                Color Change
-                            </h3>
-                            <div class="bg-black/20 p-2 rounded mb-2 text-xs">
-                                <div class="flex items-center mb-1"><span class="w-2 h-2 bg-blue-500 rounded-full mr-1"></span> Blue = Safe</div>
-                                <div class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span> Green = Caution</div>
-                            </div>
-                            <p class="font-bold text-xs">If Blue turns Green, STOP.</p>
-                        </div>
+                    <div style="background:#eab308; color:#422006; padding:1.5rem; border-radius:0.75rem;">
+                        <h3>2. Safe Word</h3>
+                        <p class="text-sm">If relative is in trouble, ask: "What is the Safe Word?"</p>
                     </div>
-
+                    <div style="background:#16a34a; padding:1.5rem; border-radius:0.75rem;">
+                        <h3>3. Color Change</h3>
+                        <p class="text-sm">If Blue chat turns Green, STOP.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <footer class="bg-slate-50 p-6 text-center text-slate-400 text-sm border-t border-slate-200">
+        <footer style="padding:2rem; text-align:center; color:#94a3b8; font-size:0.875rem;">
             <p>Asher Star Security Protocol • Created for Official Use</p>
         </footer>
 
-    </div>
-
-    <!-- Download Button (Visible only on screen) -->
-    <div class="fixed bottom-6 right-6 no-print">
-        <a href="toCleanFB.pdf" download="toCleanFB.pdf" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-xl flex items-center transition-all transform hover:scale-105 no-underline">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Download Guide
-        </a>
     </div>
 
 </body>
